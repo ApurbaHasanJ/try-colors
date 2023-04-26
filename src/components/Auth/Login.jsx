@@ -1,20 +1,34 @@
-import React, { useState } from "react";
-import { toast } from "react-toastify";
+import React, { useContext, useState } from "react";
+import { AuthContext } from "../../Context/AuthProvider";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
+
+  const { login, setUser } = useContext(AuthContext);
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (emailError) {
-      toast(emailError);
+      e.target.email.focus();
       return;
     } else if (passwordError) {
-      toast(passwordError);
+      e.target.password.focus();
       return;
     }
+
+    // login
+    login(email, password).then((result) => {
+      const user = result.user;
+      setUser(user);
+      navigate(location.state.pathname || "/");
+    });
   };
 
   // Uncontrolled component => controlled component
@@ -101,6 +115,10 @@ const Login = () => {
       >
         Submit
       </button>
+
+      <p>
+        Don&apos;t have an account? <Link to="/register" state={location.state}>Register here</Link>
+      </p>
     </form>
   );
 };
