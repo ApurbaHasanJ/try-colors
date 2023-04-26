@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { toast } from "react-toastify";
 
 const Login = () => {
   const [password, setPassword] = useState("");
@@ -7,10 +8,13 @@ const Login = () => {
   const [emailError, setEmailError] = useState("");
   const handleSubmit = (e) => {
     e.preventDefault();
-    const form = e.target;
-    const password = form.password.value;
-    // const email = form.email.value
-    console.log(password);
+    if (emailError) {
+      toast(emailError);
+      return;
+    } else if (passwordError) {
+      toast(passwordError);
+      return;
+    }
   };
 
   // Uncontrolled component => controlled component
@@ -33,7 +37,7 @@ const Login = () => {
     setPassword(passwordInput);
     if (passwordInput.length < 6) {
       setPasswordError("Password must be at least 6 characters");
-    } else if (!/.+[A-Z].+/.test(passwordInput)) {
+    } else if (!/.+[A-Z]/.test(passwordInput)) {
       setPasswordError("Password must contain at least one capital letter");
     } else {
       setPasswordError("");
@@ -91,6 +95,12 @@ const Login = () => {
         </label>
         {passwordError && <span className="error">{passwordError}</span>}
       </div>
+      <button
+        type="submit"
+        className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+      >
+        Submit
+      </button>
     </form>
   );
 };
